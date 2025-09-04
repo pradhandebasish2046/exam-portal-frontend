@@ -44,7 +44,8 @@ const ExamPage = () => {
 
       setLoading(true);
       try {
-        const response = await axios.get(`/api/exam/${examId}`);
+        const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+        const response = await axios.get(`${API_BASE_URL}/exam/${examId}`);
         console.log('API Response:', response.data);
         console.log('Questions array:', response.data.questions);
         console.log('Questions type:', typeof response.data.questions);
@@ -188,7 +189,8 @@ const ExamPage = () => {
       console.log('Answers types:', Object.entries(answersWithIntKeys).map(([k, v]) => [typeof k, typeof v]));
       console.log('Time spent types:', Object.entries(timeSpentWithQuestionIds).map(([k, v]) => [typeof k, typeof v]));
 
-      const response = await axios.post(`/api/exam/${examId}/submit`, submissionData);
+      const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+      const response = await axios.post(`${API_BASE_URL}/exam/${examId}/submit`, submissionData);
       
       // Store user ID in localStorage for result retrieval
       localStorage.setItem(`exam_${examId}_user`, userId);

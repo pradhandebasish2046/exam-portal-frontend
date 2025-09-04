@@ -1,6 +1,13 @@
 {
     "rewrites": [
-      { "source": "/(.*)", "destination": "/" }
+      { 
+        "source": "/api/(.*)", 
+        "destination": "https://exam-portal-backend-production.up.railway.app/api/$1" 
+      },
+      { 
+        "source": "/(.*)", 
+        "destination": "/" 
+      }
     ]
   }
   

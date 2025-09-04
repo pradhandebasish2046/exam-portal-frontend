@@ -12,7 +12,8 @@ const ResultPage = () => {
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        const response = await axios.get(`/api/result/${examId}/${userId}`);
+        const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+        const response = await axios.get(`${API_BASE_URL}/result/${examId}/${userId}`);
         setResult(response.data);
       } catch (err) {
         setError(err.response?.data?.detail || 'Failed to load result');

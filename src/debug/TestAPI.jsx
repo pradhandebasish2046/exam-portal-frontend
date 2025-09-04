@@ -18,8 +18,9 @@ const TestAPI = () => {
     setResult(null);
 
     try {
-      console.log('Testing API call to:', `/api/exam/${examId}`);
-      const response = await axios.get(`/api/exam/${examId}`);
+      const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+      console.log('Testing API call to:', `${API_BASE_URL}/exam/${examId}`);
+      const response = await axios.get(`${API_BASE_URL}/exam/${examId}`);
       
       console.log('Full response:', response);
       console.log('Response data:', response.data);
