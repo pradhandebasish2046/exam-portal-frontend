@@ -33,7 +33,7 @@ function HomePage() {
         <div className="exam-input">
           <input 
             type="text" 
-            placeholder="Enter Exam ID (e.g., abc123)"
+            placeholder="Enter Exam ID (try 'test' for demo)"
             id="examIdInput"
           />
           <button 
@@ -48,6 +48,17 @@ function HomePage() {
           >
             Start Exam
           </button>
+        </div>
+        
+        <div className="demo-info" style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e3f2fd', borderRadius: '8px', border: '1px solid #2196f3' }}>
+          <h4>🚀 Demo Mode</h4>
+          <p>Since the backend is not connected, the app will automatically use mock data for testing.</p>
+          <p><strong>Try these exam IDs:</strong></p>
+          <ul style={{ textAlign: 'left', display: 'inline-block' }}>
+            <li><code>test</code> - Sample exam with 5 questions</li>
+            <li><code>mock</code> - Same sample exam</li>
+            <li>Any other ID will show an error</li>
+          </ul>
         </div>
         
         <div className="features">

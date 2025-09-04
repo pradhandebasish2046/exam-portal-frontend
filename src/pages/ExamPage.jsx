@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useExam, QUESTION_STATUS } from '../context/ExamContext';
+import { mockAPI } from '../utils/mockData';
 import QuestionPanel from '../components/QuestionPanel';
 import QuestionNavigation from '../components/QuestionNavigation';
 import StatusPanel from '../components/StatusPanel';
@@ -59,6 +60,21 @@ const ExamPage = () => {
         startExam();
       } catch (err) {
         console.error('Error loading exam:', err);
+        
+        // If it's a network error, try using mock data
+        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+          console.log('Network error detected, trying mock data...');
+          try {
+            const mockResponse = await mockAPI.getExam(examId);
+            console.log('Using mock data:', mockResponse.data);
+            setExamData(examId, mockResponse.data.questions);
+            startExam();
+            return;
+          } catch (mockErr) {
+            console.error('Mock data also failed:', mockErr);
+          }
+        }
+        
         setError(err.response?.data?.detail || err.message || 'Failed to load exam');
       }
     };
@@ -190,7 +206,19 @@ const ExamPage = () => {
       console.log('Time spent types:', Object.entries(timeSpentWithQuestionIds).map(([k, v]) => [typeof k, typeof v]));
 
       const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-      const response = await axios.post(`${API_BASE_URL}/exam/${examId}/submit`, submissionData);
+      let response;
+      
+      try {
+        response = await axios.post(`${API_BASE_URL}/exam/${examId}/submit`, submissionData);
+      } catch (err) {
+        // If it's a network error, try using mock data
+        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+          console.log('Network error on submit, using mock data...');
+          response = await mockAPI.submitExam(examId, submissionData);
+        } else {
+          throw err;
+        }
+      }
       
       // Store user ID in localStorage for result retrieval
       localStorage.setItem(`exam_${examId}_user`, userId);

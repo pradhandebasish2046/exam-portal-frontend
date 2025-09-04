@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { mockAPI } from '../utils/mockData';
 
 const TestAPI = () => {
   const [examId, setExamId] = useState('');
@@ -32,10 +33,31 @@ const TestAPI = () => {
         data: response.data,
         questionsType: typeof response.data.questions,
         isQuestionsArray: Array.isArray(response.data.questions),
-        questionsLength: response.data.questions ? response.data.questions.length : 'N/A'
+        questionsLength: response.data.questions ? response.data.questions.length : 'N/A',
+        source: 'Real API'
       });
     } catch (err) {
       console.error('API Error:', err);
+      
+      // If it's a network error, try mock data
+      if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+        console.log('Network error detected, trying mock data...');
+        try {
+          const mockResponse = await mockAPI.getExam(examId);
+          setResult({
+            status: 200,
+            data: mockResponse.data,
+            questionsType: typeof mockResponse.data.questions,
+            isQuestionsArray: Array.isArray(mockResponse.data.questions),
+            questionsLength: mockResponse.data.questions ? mockResponse.data.questions.length : 'N/A',
+            source: 'Mock Data (API failed)'
+          });
+          return;
+        } catch (mockErr) {
+          console.error('Mock data also failed:', mockErr);
+        }
+      }
+      
       setError({
         message: err.message,
         status: err.response?.status,
@@ -68,6 +90,16 @@ const TestAPI = () => {
           style={{ marginLeft: '10px', padding: '5px 10px' }}
         >
           {loading ? 'Testing...' : 'Test API'}
+        </button>
+        <button 
+          onClick={async () => {
+            setExamId('test');
+            await testAPI();
+          }}
+          disabled={loading}
+          style={{ marginLeft: '10px', padding: '5px 10px', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '4px' }}
+        >
+          Test Mock Data
         </button>
       </div>
 

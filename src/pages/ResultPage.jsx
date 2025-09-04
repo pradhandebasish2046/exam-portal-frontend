@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { mockAPI } from '../utils/mockData';
 
 const ResultPage = () => {
   const { examId, userId } = useParams();
@@ -16,7 +17,18 @@ const ResultPage = () => {
         const response = await axios.get(`${API_BASE_URL}/result/${examId}/${userId}`);
         setResult(response.data);
       } catch (err) {
-        setError(err.response?.data?.detail || 'Failed to load result');
+        // If it's a network error, try using mock data
+        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+          console.log('Network error on result fetch, using mock data...');
+          try {
+            const mockResponse = await mockAPI.getResult(examId, userId);
+            setResult(mockResponse.data);
+          } catch (mockErr) {
+            setError('Failed to load result (mock data also failed)');
+          }
+        } else {
+          setError(err.response?.data?.detail || 'Failed to load result');
+        }
       } finally {
         setLoading(false);
       }
