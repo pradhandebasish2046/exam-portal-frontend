@@ -52,6 +52,13 @@ function examReducer(state, action) {
     
     case ACTIONS.SET_EXAM_DATA:
       const { examId, questions } = action.payload;
+      
+      // Validate that questions is an array
+      if (!Array.isArray(questions)) {
+        console.error('SET_EXAM_DATA: questions is not an array:', questions);
+        return { ...state, error: 'Invalid exam data: questions must be an array', loading: false };
+      }
+      
       const initialStatus = {};
       questions.forEach((q, index) => {
         initialStatus[index] = QUESTION_STATUS.NOT_VISITED;

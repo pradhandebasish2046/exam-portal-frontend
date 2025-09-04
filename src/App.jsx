@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ExamProvider } from './context/ExamContext';
 import ExamPage from './pages/ExamPage';
 import ResultPage from './pages/ResultPage';
+import TestAPI from './debug/TestAPI';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Routes>
             <Route path="/exam/:examId" element={<ExamPage />} />
             <Route path="/result/:examId/:userId" element={<ResultPage />} />
+            <Route path="/debug" element={<TestAPI />} />
             <Route path="/" element={<HomePage />} />
           </Routes>
         </div>
@@ -58,6 +60,12 @@ function HomePage() {
             <li>📊 Detailed result analysis</li>
             <li>⏱️ Time tracking per question</li>
           </ul>
+        </div>
+        
+        <div className="debug-link" style={{ marginTop: '20px' }}>
+          <a href="/debug" style={{ color: '#666', textDecoration: 'none' }}>
+            🔧 Debug API (for troubleshooting)
+          </a>
         </div>
       </div>
     </div>

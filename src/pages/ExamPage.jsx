@@ -45,10 +45,20 @@ const ExamPage = () => {
       setLoading(true);
       try {
         const response = await axios.get(`/api/exam/${examId}`);
+        console.log('API Response:', response.data);
+        console.log('Questions array:', response.data.questions);
+        console.log('Questions type:', typeof response.data.questions);
+        console.log('Is array:', Array.isArray(response.data.questions));
+        
+        if (!response.data.questions) {
+          throw new Error('No questions found in response');
+        }
+        
         setExamData(examId, response.data.questions);
         startExam();
       } catch (err) {
-        setError(err.response?.data?.detail || 'Failed to load exam');
+        console.error('Error loading exam:', err);
+        setError(err.response?.data?.detail || err.message || 'Failed to load exam');
       }
     };
 
