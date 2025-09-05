@@ -12,10 +12,7 @@ const ResultPage = () => {
 
   useEffect(() => {
     const fetchResult = async () => {
-      if (loading) {
-        return; // Already loading
-      }
-
+      console.log('ResultPage: Starting to fetch result for', examId, userId);
       setLoading(true);
       const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mock-api.example.com/api';
       
@@ -24,10 +21,13 @@ const ResultPage = () => {
         console.log('Using mock data for result loading...');
         try {
           const mockResponse = await mockAPI.getResult(examId, userId);
+          console.log('Mock result received:', mockResponse.data);
           setResult(mockResponse.data);
         } catch (mockErr) {
+          console.error('Mock result error:', mockErr);
           setError('Demo mode unavailable. Please try again later.');
         } finally {
+          console.log('Setting loading to false');
           setLoading(false);
         }
         return;

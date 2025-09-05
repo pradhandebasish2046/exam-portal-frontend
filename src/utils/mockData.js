@@ -75,7 +75,7 @@ export const mockAPI = {
     
     // Store the submission data
     const submissionKey = `${examId}_${submissionData.user_id}`;
-    mockSubmissions.set(submissionKey, {
+    const submissionDataToStore = {
       exam_id: examId,
       user_id: submissionData.user_id,
       answers: submissionData.answers || {},
@@ -87,7 +87,12 @@ export const mockAPI = {
       correct,
       incorrect,
       submitted_at: new Date().toISOString()
-    });
+    };
+    
+    console.log('Mock API: Storing submission with key', submissionKey);
+    console.log('Mock API: Submission data', submissionDataToStore);
+    mockSubmissions.set(submissionKey, submissionDataToStore);
+    console.log('Mock API: Total submissions stored', mockSubmissions.size);
     
     return {
       data: {
@@ -100,16 +105,37 @@ export const mockAPI = {
   },
   
   getResult: async (examId, userId) => {
+    console.log('Mock API: Getting result for', examId, userId);
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 800));
     
     const submissionKey = `${examId}_${userId}`;
+    console.log('Mock API: Looking for submission key', submissionKey);
+    console.log('Mock API: Available submissions', Array.from(mockSubmissions.keys()));
+    
     const submission = mockSubmissions.get(submissionKey);
     
     if (!submission) {
-      throw new Error('Result not found');
+      console.error('Mock API: No submission found for key', submissionKey);
+      // Create a fallback result for demo purposes
+      const fallbackResult = {
+        exam_id: examId,
+        user_id: userId,
+        answers: {},
+        time_spent: {},
+        total_time: 0,
+        score: 0,
+        total_questions: mockExamData.questions.length,
+        attempted: 0,
+        correct: 0,
+        incorrect: 0,
+        submitted_at: new Date().toISOString()
+      };
+      console.log('Mock API: Using fallback result', fallbackResult);
+      return { data: fallbackResult };
     }
     
+    console.log('Mock API: Found submission', submission);
     return { data: submission };
   }
 };
