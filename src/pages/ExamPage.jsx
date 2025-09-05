@@ -45,7 +45,7 @@ const ExamPage = () => {
 
       setLoading(true);
       try {
-        const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mock-api.example.com/api';
         const response = await axios.get(`${API_BASE_URL}/exam/${examId}`);
         console.log('API Response:', response.data);
         console.log('Questions array:', response.data.questions);
@@ -207,7 +207,7 @@ const ExamPage = () => {
       console.log('Answers types:', Object.entries(answersWithIntKeys).map(([k, v]) => [typeof k, typeof v]));
       console.log('Time spent types:', Object.entries(timeSpentWithQuestionIds).map(([k, v]) => [typeof k, typeof v]));
 
-      const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mock-api.example.com/api';
       let response;
       
       try {
