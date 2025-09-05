@@ -12,6 +12,11 @@ const ResultPage = () => {
 
   useEffect(() => {
     const fetchResult = async () => {
+      if (loading) {
+        return; // Already loading
+      }
+
+      setLoading(true);
       try {
         const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mock-api.example.com/api';
         const response = await axios.get(`${API_BASE_URL}/result/${examId}/${userId}`);
