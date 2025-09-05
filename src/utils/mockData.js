@@ -53,11 +53,9 @@ export const mockAPI = {
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    if (examId === 'test' || examId === 'mock') {
-      return { data: mockExamData };
-    }
-    
-    throw new Error('Exam not found');
+    // Accept any exam ID for demo purposes
+    console.log('Mock API: Loading exam with ID:', examId);
+    return { data: mockExamData };
   },
   
   submitExam: async (examId, submissionData) => {

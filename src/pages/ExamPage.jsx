@@ -72,7 +72,8 @@ const ExamPage = () => {
             return;
           } catch (mockErr) {
             console.error('Mock data also failed:', mockErr);
-            setError('Demo mode unavailable. Please try again later.');
+            // Even if mock data fails, show a helpful error
+            setError(`Demo mode error: ${mockErr.message}. Please try refreshing the page.`);
             return;
           }
         }

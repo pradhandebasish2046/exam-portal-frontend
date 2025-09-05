@@ -33,7 +33,7 @@ function HomePage() {
         <div className="exam-input">
           <input 
             type="text" 
-            placeholder="Enter Exam ID (try 'test' for demo)"
+            placeholder="Enter any Exam ID (try 'test', 'mock', or 'd99e1923')"
             id="examIdInput"
           />
           <button 
@@ -53,11 +53,12 @@ function HomePage() {
         <div className="demo-info" style={{ marginTop: '20px', padding: '15px', backgroundColor: '#e3f2fd', borderRadius: '8px', border: '1px solid #2196f3' }}>
           <h4>🚀 Demo Mode</h4>
           <p>The app will automatically use mock data for testing when the backend is unavailable.</p>
-          <p><strong>Try these exam IDs:</strong></p>
+          <p><strong>Try any exam ID:</strong></p>
           <ul style={{ textAlign: 'left', display: 'inline-block' }}>
             <li><code>test</code> - Sample exam with 5 questions</li>
             <li><code>mock</code> - Same sample exam</li>
-            <li>Any other ID will show an error</li>
+            <li><code>d99e1923</code> - Any exam ID will work in demo mode</li>
+            <li><strong>Any other ID</strong> - All exam IDs work in demo mode!</li>
           </ul>
           <p style={{ marginTop: '10px', fontSize: '0.9em', color: '#666' }}>
             <strong>Note:</strong> This is a demo version. For production use, deploy the backend and set the API URL.
