@@ -61,9 +61,9 @@ const ExamPage = () => {
       } catch (err) {
         console.error('Error loading exam:', err);
         
-        // If it's a network error, try using mock data
-        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
-          console.log('Network error detected, trying mock data...');
+        // If it's a network error or 404, try using mock data
+        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error' || err.response?.status === 404) {
+          console.log('API unavailable, using mock data for demo...');
           try {
             const mockResponse = await mockAPI.getExam(examId);
             console.log('Using mock data:', mockResponse.data);
@@ -72,6 +72,8 @@ const ExamPage = () => {
             return;
           } catch (mockErr) {
             console.error('Mock data also failed:', mockErr);
+            setError('Demo mode unavailable. Please try again later.');
+            return;
           }
         }
         
@@ -211,9 +213,9 @@ const ExamPage = () => {
       try {
         response = await axios.post(`${API_BASE_URL}/exam/${examId}/submit`, submissionData);
       } catch (err) {
-        // If it's a network error, try using mock data
-        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
-          console.log('Network error on submit, using mock data...');
+        // If it's a network error or 404, try using mock data
+        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error' || err.response?.status === 404) {
+          console.log('API unavailable on submit, using mock data...');
           response = await mockAPI.submitExam(examId, submissionData);
         } else {
           throw err;

@@ -17,14 +17,14 @@ const ResultPage = () => {
         const response = await axios.get(`${API_BASE_URL}/result/${examId}/${userId}`);
         setResult(response.data);
       } catch (err) {
-        // If it's a network error, try using mock data
-        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
-          console.log('Network error on result fetch, using mock data...');
+        // If it's a network error or 404, try using mock data
+        if (err.code === 'ERR_NETWORK' || err.message === 'Network Error' || err.response?.status === 404) {
+          console.log('API unavailable on result fetch, using mock data...');
           try {
             const mockResponse = await mockAPI.getResult(examId, userId);
             setResult(mockResponse.data);
           } catch (mockErr) {
-            setError('Failed to load result (mock data also failed)');
+            setError('Demo mode unavailable. Please try again later.');
           }
         } else {
           setError(err.response?.data?.detail || 'Failed to load result');
