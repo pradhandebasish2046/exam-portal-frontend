@@ -17,8 +17,23 @@ const ResultPage = () => {
       }
 
       setLoading(true);
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mock-api.example.com/api';
+      
+      // If using mock API URL, use mock data directly
+      if (API_BASE_URL === 'https://mock-api.example.com/api') {
+        console.log('Using mock data for result loading...');
+        try {
+          const mockResponse = await mockAPI.getResult(examId, userId);
+          setResult(mockResponse.data);
+        } catch (mockErr) {
+          setError('Demo mode unavailable. Please try again later.');
+        } finally {
+          setLoading(false);
+        }
+        return;
+      }
+      
       try {
-        const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mock-api.example.com/api';
         const response = await axios.get(`${API_BASE_URL}/result/${examId}/${userId}`);
         setResult(response.data);
       } catch (err) {
