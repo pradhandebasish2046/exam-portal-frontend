@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useExam, QUESTION_STATUS } from '../context/ExamContext';
@@ -35,6 +35,7 @@ const ExamPage = () => {
 
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [currentQuestionStartTime, setCurrentQuestionStartTime] = useState(null);
+  const loadingRef = useRef(false);
 
   // Load exam data
   useEffect(() => {
@@ -43,6 +44,11 @@ const ExamPage = () => {
         return; // Already loaded
       }
 
+      if (loadingRef.current) {
+        return; // Already loading
+      }
+
+      loadingRef.current = true;
       setLoading(true);
       try {
         const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://mock-api.example.com/api';
@@ -79,11 +85,13 @@ const ExamPage = () => {
         }
         
         setError(err.response?.data?.detail || err.message || 'Failed to load exam');
+      } finally {
+        loadingRef.current = false;
       }
     };
 
     loadExam();
-  }, [examId, contextExamId, questions.length, setExamData, setLoading, setError, startExam]);
+  }, [examId, contextExamId]);
 
   // Track time spent on current question
   useEffect(() => {
