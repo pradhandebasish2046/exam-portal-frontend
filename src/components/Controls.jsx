@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import { useExam, QUESTION_STATUS } from '../context/ExamContext';
 
@@ -12,10 +12,17 @@ const Controls = ({ onPrevious, onNext, onSubmit }) => {
     getQuestionStatus
   } = useExam();
 
+  const [buttonFeedback, setButtonFeedback] = useState(null);
   const isFirstQuestion = currentQuestionIndex === 0;
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
   const currentAnswer = getAnswer(currentQuestionIndex);
   const hasSelectedOption = currentAnswer !== null && currentAnswer !== undefined;
+  const currentStatus = getQuestionStatus(currentQuestionIndex);
+
+  // Reset button feedback when question changes
+  useEffect(() => {
+    setButtonFeedback(null);
+  }, [currentQuestionIndex]);
 
   const handleSaveAndNext = () => {
     if (hasSelectedOption) {
@@ -31,25 +38,33 @@ const Controls = ({ onPrevious, onNext, onSubmit }) => {
 
 
   const handleMarkForReviewAndNext = () => {
+    const newStatus = hasSelectedOption ? QUESTION_STATUS.ANSWERED_REVIEW : QUESTION_STATUS.MARKED_REVIEW;
+    
     console.log('Mark for Review clicked:', {
       currentQuestionIndex,
       hasSelectedOption,
       currentAnswer,
-      status: hasSelectedOption ? 'ANSWERED_REVIEW' : 'MARKED_REVIEW'
+      newStatus,
+      currentStatus
     });
+    
+    // Set visual feedback based on whether option is selected
+    if (hasSelectedOption) {
+      setButtonFeedback('answered-marked'); // Green with purple border
+    } else {
+      setButtonFeedback('marked-for-review'); // Red with purple border
+    }
     
     // Use flushSync to ensure the status update is synchronous
     flushSync(() => {
-      if (hasSelectedOption) {
-        // Save the answer as Answered & Marked for Review, go to next question
-        setQuestionStatus(currentQuestionIndex, QUESTION_STATUS.ANSWERED_REVIEW);
-      } else {
-        // Mark as Marked for Review (red with purple border), go to next question
-        setQuestionStatus(currentQuestionIndex, QUESTION_STATUS.MARKED_REVIEW);
-      }
+      setQuestionStatus(currentQuestionIndex, newStatus);
     });
     
-    onNext();
+    // Clear feedback after a short delay and move to next question
+    setTimeout(() => {
+      setButtonFeedback(null);
+      onNext();
+    }, 500);
   };
 
   const handleClearResponse = () => {
@@ -70,8 +85,6 @@ const Controls = ({ onPrevious, onNext, onSubmit }) => {
           Save & Next
         </button>
         
-
-        
         <button 
           className="btn btn-secondary"
           onClick={handleClearResponse}
@@ -80,11 +93,23 @@ const Controls = ({ onPrevious, onNext, onSubmit }) => {
         </button>
         
         <button 
-          className="btn btn-info"
+          className={`btn btn-info ${buttonFeedback ? `btn-${buttonFeedback}` : ''}`}
           onClick={handleMarkForReviewAndNext}
         >
           Mark for Review & Next
         </button>
+      </div>
+      
+      {/* Current question status indicator */}
+      <div className="current-status">
+        <span className="status-label">Current Status: </span>
+        <span className={`status-indicator ${currentStatus.toLowerCase().replace('_', '-')}`}>
+          {currentStatus === QUESTION_STATUS.ANSWERED_REVIEW ? 'Answered & Marked' :
+           currentStatus === QUESTION_STATUS.MARKED_REVIEW ? 'Marked for Review' :
+           currentStatus === QUESTION_STATUS.ANSWERED ? 'Answered' :
+           currentStatus === QUESTION_STATUS.NOT_ANSWERED ? 'Not Answered' :
+           'Not Visited'}
+        </span>
       </div>
 
       <div className="navigation-controls">

@@ -313,6 +313,31 @@ body {
   font-size: 1.1rem;
 }
 
+/* Button feedback styles for Mark for Review */
+.btn-answered-marked {
+  background-color: #4CAF50 !important;
+  color: white !important;
+  border: 3px solid #9C27B0 !important;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5) !important;
+  animation: pulse 0.5s ease-in-out;
+  font-weight: bold !important;
+}
+
+.btn-marked-for-review {
+  background-color: #F44336 !important;
+  color: white !important;
+  border: 3px solid #9C27B0 !important;
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.5) !important;
+  animation: pulse 0.5s ease-in-out;
+  font-weight: bold !important;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 /* Controls */
 .controls {
   display: flex;
@@ -320,6 +345,51 @@ body {
   align-items: center;
   padding-top: 1rem;
   border-top: 1px solid #e0e0e0;
+}
+
+.current-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  border-left: 4px solid #667eea;
+}
+
+.status-indicator {
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.status-indicator.answered-marked {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #9C27B0;
+}
+
+.status-indicator.marked-for-review {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #9C27B0;
+}
+
+.status-indicator.answered {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-indicator.not-answered {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-indicator.not-visited {
+  background-color: #f8f9fa;
+  color: #6c757d;
 }
 
 .navigation-controls {

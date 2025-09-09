@@ -143,7 +143,11 @@ const ExamPage = () => {
     // But preserve MARKED_REVIEW and ANSWERED_REVIEW statuses
     console.log('handleQuestionSelect - Current status:', currentStatus, 'Has option:', hasSelectedOption, 'Question:', currentQuestionIndex);
     
-    if (currentStatus === QUESTION_STATUS.NOT_VISITED) {
+    // Preserve marked statuses - don't change them when navigating
+    if (currentStatus === QUESTION_STATUS.ANSWERED_REVIEW || currentStatus === QUESTION_STATUS.MARKED_REVIEW) {
+      console.log('Preserving marked status:', currentStatus, 'for question:', currentQuestionIndex);
+      // Don't change the status for marked questions
+    } else if (currentStatus === QUESTION_STATUS.NOT_VISITED) {
       // First time visiting - set status based on whether option is selected
       if (hasSelectedOption) {
         setQuestionStatus(currentQuestionIndex, QUESTION_STATUS.ANSWERED);
@@ -156,15 +160,7 @@ const ExamPage = () => {
     } else if (currentStatus === QUESTION_STATUS.ANSWERED && !hasSelectedOption) {
       // If previously answered but now no option selected, mark as not answered
       setQuestionStatus(currentQuestionIndex, QUESTION_STATUS.NOT_ANSWERED);
-    } else if (currentStatus === QUESTION_STATUS.ANSWERED_REVIEW && !hasSelectedOption) {
-      // If previously answered and marked but now no option selected, mark as marked for review only
-      setQuestionStatus(currentQuestionIndex, QUESTION_STATUS.MARKED_REVIEW);
-    } else if (currentStatus === QUESTION_STATUS.ANSWERED_REVIEW || currentStatus === QUESTION_STATUS.MARKED_REVIEW) {
-      // Preserve marked statuses - don't change them
-      console.log('Preserving marked status:', currentStatus);
     }
-    // If status is MARKED_REVIEW or ANSWERED_REVIEW, preserve it
-    // These statuses should not be automatically changed when navigating to the question
     
     setCurrentQuestion(questionIndex);
   };
@@ -177,7 +173,15 @@ const ExamPage = () => {
 
   const handleNext = () => {
     if (currentQuestionIndex < questions.length - 1) {
-      handleQuestionSelect(currentQuestionIndex + 1);
+      // Save time spent on current question before switching
+      if (currentQuestionStartTime && isExamStarted && currentQuestionIndex >= 0) {
+        const timeSpentOnCurrent = (Date.now() - currentQuestionStartTime) / 1000;
+        const currentTime = timeSpent[currentQuestionIndex] || 0;
+        updateTimeSpent({ [currentQuestionIndex]: currentTime + timeSpentOnCurrent });
+      }
+      
+      // Move to next question without processing current question status
+      setCurrentQuestion(currentQuestionIndex + 1);
     }
   };
 
